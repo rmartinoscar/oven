@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.token }}
+          token: ${{ secrets.TOKEN }}
 
       - name: Get current time
         id: current-time
@@ -48,7 +48,7 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.token }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         
       # Update README with link to latest docs
       - name: Update README with latest docs link
