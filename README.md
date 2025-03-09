@@ -19,6 +19,3 @@ A tool for cloning, processing, and concatenating Filament documentation.
 ./run
 ```
 
-## Latest Documentation
-
-The latest documentation is automatically generated daily and available as a GitHub release.
