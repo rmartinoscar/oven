@@ -4,8 +4,10 @@ on:
   schedule:
     # Run daily at midnight UTC
     - cron: '0 0 * * *'
-  # Allow manual triggering
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   update-docs:
@@ -15,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.TOKEN }}
+          token: ${{ github.token }}
 
       - name: Get current time
         id: current-time
@@ -48,7 +50,7 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         
       # Update README with link to latest docs
       - name: Update README with latest docs link
