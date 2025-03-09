@@ -19,3 +19,8 @@ A tool for cloning, processing, and concatenating Filament documentation.
 ./run
 ```
 
+
+## Latest Documentation
+
+Latest documentation is available [here](https://github.com/'ijpatricio/oven'/releases/download/latest-docs/filament-3.x-all.md).
+
