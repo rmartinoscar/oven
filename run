@@ -22,6 +22,7 @@ function llm:3.x() {
     docs:get 3.x
     concatenate:packages 3.x
     concatenate:all 3.x
+    zip:package-docs 3.x
 }
 
 function docs:get() {
@@ -121,6 +122,21 @@ function concatenate:all {
   
   # Remove temp file
   rm "$temp_file"
+}
+
+function zip:package-docs {
+  version="$1"
+  target_path="filament-${version}"
+  zip_file="${target_path}-packages-$1.zip"
+  
+  # Check if the target directory exists
+  if [ -d "$target_path" ]; then
+    # Create zip file of the directory
+    zip -r "$zip_file" "$target_path"
+    echo "Created $zip_file"
+  else
+    echo "Error: Directory $target_path does not exist"
+  fi
 }
 
 TIMEFORMAT="Task completed in %3lR"
