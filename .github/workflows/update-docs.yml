@@ -50,8 +50,8 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: latest-docs
-          name: Latest Documentation
+          tag_name: filament-docs
+          name: Filament Documentation for
           body: |
             Latest Filament Documentation for LLMs
             Generated on ${{ steps.current-time.outputs.time }}
