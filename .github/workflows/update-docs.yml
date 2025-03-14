@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: filament-docs-3.x
-          path: filament-3.x-all.md
+          path: docs-for-ai/filament-3.x-all.md
           retention-days: 90
 
       - name: Retry Upload if Failed
@@ -45,14 +45,14 @@ jobs:
           actions/upload-artifact@v4
           with:
             name: filament-packages-3.x
-            path: filament-3.x-packages-3.x.zip
+            path: docs-for-ai/filament-3.x-packages-3.x.zip
             retention-days: 90
           
       - name: Upload packages documentation artifact
         uses: actions/upload-artifact@v4
         with:
           name: filament-packages-3.x
-          path: filament-3.x-packages-3.x.zip
+          path: docs-for-ai/filament-3.x-packages-3.x.zip
           retention-days: 90
       
       # Create a release with the latest documentation
@@ -66,8 +66,8 @@ jobs:
             Latest Filament Documentation for LLMs
             Generated on ${{ steps.current-time.outputs.time }}
           files: |
-            filament-3.x-all.md
-            filament-3.x-packages-3.x.zip
+            docs-for-ai/filament-3.x-all.md
+            docs-for-ai/filament-3.x-packages-3.x.zip
           draft: false
           prerelease: false
         env:
@@ -84,14 +84,14 @@ jobs:
             # If README exists, check if section exists and update or add
             if grep -q "## Latest Documentation" README.md; then
               # Update existing section
-              sed -i '/## Latest Documentation/,/^## /c\## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/filament-3.x-packages-3.x.zip).\n\n' README.md
+              sed -i '/## Latest Documentation/,/^## /c\## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-packages-3.x.zip).\n\n' README.md
             else
               # Add section at the end
-              echo -e "\n## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/filament-3.x-packages-3.x.zip).\n" >> README.md
+              echo -e "\n## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-packages-3.x.zip).\n" >> README.md
             fi
           else
             # Create README if it doesn't exist
-            echo -e "# Filament Documentation Oven\n\n## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/filament-3.x-packages-3.x.zip).\n" > README.md
+            echo -e "# Filament Documentation Oven\n\n## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-packages-3.x.zip).\n" > README.md
           fi
       
       - name: Commit changes

@@ -87,7 +87,12 @@ mkdir -p $target_path
 function concatenate:all {
   version="$1"
   target_path="filament-${version}"
-  all_output="filament-${version}-all.md"
+  docs_dir="docs-for-ai"
+  
+  # Create docs-for-ai directory if it doesn't exist
+  mkdir -p "$docs_dir"
+  
+  all_output="${docs_dir}/filament-${version}-all.md"
   
   # Create a temporary file
   temp_file=$(mktemp)
@@ -127,7 +132,12 @@ function concatenate:all {
 function zip:package-docs {
   version="$1"
   target_path="filament-${version}"
-  zip_file="${target_path}-packages-$1.zip"
+  docs_dir="docs-for-ai"
+  
+  # Create docs-for-ai directory if it doesn't exist
+  mkdir -p "$docs_dir"
+  
+  zip_file="${docs_dir}/${target_path}-packages-$1.zip"
   
   # Check if the target directory exists
   if [ -d "$target_path" ]; then
