@@ -160,16 +160,16 @@ function create-reproduction-repo {
   
   # Create SQLite database file
   touch database/database.sqlite
-  
-  # Run migrations with seeding
-  php artisan migrate:fresh --seed
-  
+
   # Install FilamentPHP
   composer require filament/filament:"^3.0-stable" -W
   php artisan filament:install --panels --no-interaction
   
   # Install auto-login functionality
   install_auto_login
+
+  # Run migrations with seeding
+  php artisan migrate:fresh --seed
 }
 
 function install_auto_login {
@@ -178,9 +178,12 @@ function install_auto_login {
 
   # Copy /Users/patricio/code/ijpatricio/oven/stubs/Filament/Login.php to app/Filament/Pages/Auth/Login.php
   cp "$(dirname "$0")/../stubs/Filament/Login.php" app/Filament/Pages/Auth/Login.php
-  
+
   # Update the AdminPanelProvider.php file to use the custom login page
   sed -i '' "s/->login()/->login(\\\\App\\\\Filament\\\\Pages\\\\Auth\\\\Login::class)/" app/Providers/Filament/AdminPanelProvider.php
+
+  # Replace test@example.com with test@filamentphp.com if needed
+    sed -i '' "s/'email' => 'test@example.com'/'email' => 'test@filamentphp.com'/" database/seeders/DatabaseSeeder.php
   
   echo "Auto-login functionality installed successfully."
 }
