@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  update-docs:
+  build-filament-issue:
     runs-on: ubuntu-latest
     permissions:
       contents: write
