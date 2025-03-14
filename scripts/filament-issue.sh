@@ -8,9 +8,9 @@ function create-app-filament-issue-3.x {
   composer create-project laravel/laravel $repro_dir
   cd $repro_dir
 
-  # Update .env to use SQLite
-  sed -i '' "s/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/" .env
-  
+  # Prepare .env
+  cp .env.example .env
+
   # Create SQLite database file
   touch database/database.sqlite
 
