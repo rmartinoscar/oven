@@ -64,7 +64,3 @@ function package_zip_file() {
     # Create zip file
     zip -r "$output_dir/$1.zip" "app-$1"
 }
-
-function test {
-  create-app-filament-issue-3.x ; cd app-filament-issue-3.x ; php artisan serve
-}
