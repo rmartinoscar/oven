@@ -46,7 +46,7 @@ jobs:
       - name: Test the artifact(s)
         shell: bash
         run: |
-          ./run prepare_sandbox
+          ./run prepare_sandbox filament-issue-3.x
           cd e2e
           npm run test
 

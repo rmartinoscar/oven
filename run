@@ -1,17 +1,9 @@
 #!/usr/bin/env bash
 
-# Inspired on https://github.com/adriancooney/Taskfile
-#
-# Install an alias, to be able to simply execute `run`
-# echo 'alias run=./scripts/run' >> ~/.aliases
-#
 set -e
 
-# Source the abstracted scripts
-SCRIPT_DIR="$(dirname "$0")"
-
-source "$SCRIPT_DIR/scripts/filament-issue.sh"
-source "$SCRIPT_DIR/scripts/filament-docs.sh"
+source "scripts/filament-issue.sh"
+source "scripts/filament-docs.sh"
 
 function help {
     echo "$0 <task> <args>"

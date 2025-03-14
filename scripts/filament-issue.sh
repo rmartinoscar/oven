@@ -102,5 +102,4 @@ function prepare_sandbox {
 function test() {
     prepare_sandbox filament-issue-3.x
     cd filament-issue-sandbox ; php artisan serve
-
 }
