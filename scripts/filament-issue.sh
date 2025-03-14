@@ -10,6 +10,7 @@ function create-app-filament-issue-3.x {
 
   # Prepare .env
   cp .env.example .env
+  sed -i 's/^APP_NAME=.*/APP_NAME=Filament/' .env
   php artisan key:generate
 
   # Create SQLite database file
