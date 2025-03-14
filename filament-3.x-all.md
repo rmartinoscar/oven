@@ -1,5 +1,5 @@
 # Filament 3.x Documentation
-Generated on Fri Mar 14 06:52:01 UTC 2025
+Generated on Fri Mar 14 08:07:40 UTC 2025
 
 # Documentation for actions. File: 01-installation.md
 ---
