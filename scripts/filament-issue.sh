@@ -40,17 +40,35 @@ function install_auto_login {
   cp "$(dirname "$0")/../stubs/Filament/Login.php" app/Filament/Pages/Auth/Login.php
 
   # Update the AdminPanelProvider.php file to use the custom login page
-  sed -i '' "s/->login()/->login(\\\\App\\\\Filament\\\\Pages\\\\Auth\\\\Login::class)/" app/Providers/Filament/AdminPanelProvider.php
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS (BSD) sed
+    sed -i '' "s/->login()/->login(\\\\App\\\\Filament\\\\Pages\\\\Auth\\\\Login::class)/" app/Providers/Filament/AdminPanelProvider.php
+  else
+    # GNU sed (Linux)
+    sed -i "s/->login()/->login(\\\\App\\\\Filament\\\\Pages\\\\Auth\\\\Login::class)/" app/Providers/Filament/AdminPanelProvider.php
+  fi
 
   # Replace test@example.com with test@filamentphp.com if needed
-  sed -i '' "s/'email' => 'test@example.com'/'email' => 'test@filamentphp.com'/" database/seeders/DatabaseSeeder.php
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS (BSD) sed
+    sed -i '' "s/'email' => 'test@example.com'/'email' => 'test@filamentphp.com'/" database/seeders/DatabaseSeeder.php
+  else
+    # GNU sed (Linux)
+    sed -i "s/'email' => 'test@example.com'/'email' => 'test@filamentphp.com'/" database/seeders/DatabaseSeeder.php
+  fi
   
   echo "Auto-login functionality installed successfully."
 }
 
 function add_root_redirect_to_admin_panel {
   # Replace the default welcome route with a redirect to the admin panel
-  sed -i '' "s|return view('welcome');|return redirect('/admin');|" routes/web.php
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS (BSD) sed
+    sed -i '' "s|return view('welcome');|return redirect('/admin');|" routes/web.php
+  else
+    # GNU sed (Linux)
+    sed -i "s|return view('welcome');|return redirect('/admin');|" routes/web.php
+  fi
 }
 
 function package_zip_file() {

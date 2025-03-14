@@ -11,7 +11,7 @@ set -e
 SCRIPT_DIR="$(dirname "$0")"
 
 source "$SCRIPT_DIR/scripts/filament-issue.sh"
-source "$SCRIPT_DIR/scripts/filamentdocs.sh"
+source "$SCRIPT_DIR/scripts/filament-docs.sh"
 
 function help {
     echo "$0 <task> <args>"

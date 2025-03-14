@@ -28,7 +28,7 @@ function concatenate:packages {
             # Find all markdown files in docs directory, sorted by name
             find "${package_dir}docs" -type f -name "*.md" 2>/dev/null | sort | while read -r file; do
                 # Get the relative path from the package/docs directory
-                rel_path=$(echo "$file" | sed "s|${package_dir}docs/||")
+                rel_path=$(echo "$file" | sed "s|${package_dir}docs/||g")
                 
                 # Write file header to temp file
                 echo "# Documentation for ${package_name}. File: $rel_path" >> "$temp_file"
