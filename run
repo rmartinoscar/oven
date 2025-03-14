@@ -168,6 +168,9 @@ function create-reproduction-repo {
   # Install auto-login functionality
   install_auto_login
 
+  # Add root redirect to admin panel
+  add_root_redirect_to_admin_panel
+
   # Run migrations with seeding
   php artisan migrate:fresh --seed
 }
@@ -186,6 +189,11 @@ function install_auto_login {
     sed -i '' "s/'email' => 'test@example.com'/'email' => 'test@filamentphp.com'/" database/seeders/DatabaseSeeder.php
   
   echo "Auto-login functionality installed successfully."
+}
+
+function add_root_redirect_to_admin_panel {
+  # Replace the default welcome route with a redirect to the admin panel
+  sed -i '' "s|return view('welcome');|return redirect('/admin');|" routes/web.php
 }
 
 function test {
