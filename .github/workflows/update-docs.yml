@@ -37,6 +37,16 @@ jobs:
           name: filament-docs-3.x
           path: filament-3.x-all.md
           retention-days: 90
+
+      - name: Retry Upload if Failed
+        if: failure()
+        run: |
+          sleep 10
+          actions/upload-artifact@v4
+          with:
+            name: filament-packages-3.x
+            path: filament-3.x-packages-3.x.zip
+            retention-days: 90
           
       - name: Upload packages documentation artifact
         uses: actions/upload-artifact@v4
