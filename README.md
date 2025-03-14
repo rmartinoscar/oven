@@ -10,4 +10,3 @@ A tool for a multitude of automations.
 - Filament Issue.
   - Share, Reproduce, and Verify Potential Bugs
     Docs: https://unitedbycode.com/filament-docs-for-ai
-
