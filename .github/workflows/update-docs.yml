@@ -72,30 +72,3 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        
-      # Update README with link to latest docs
-      - name: Update README with latest docs link
-        run: |
-          # Get repo info
-          REPO="${GITHUB_REPOSITORY}"
-          
-          # Create or update README with link
-          if [ -f "README.md" ]; then
-            # If README exists, check if section exists and update or add
-            if grep -q "## Latest Documentation" README.md; then
-              # Update existing section
-              sed -i '/## Latest Documentation/,/^## /c\## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-packages-3.x.zip).\n\n' README.md
-            else
-              # Add section at the end
-              echo -e "\n## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-packages-3.x.zip).\n" >> README.md
-            fi
-          else
-            # Create README if it doesn't exist
-            echo -e "# Filament Documentation Oven\n\n## Latest Documentation\n\nLatest documentation is available [here](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-all.md).\n\nIndividual package documentation is available as a [ZIP file](https://github.com/${REPO}/releases/download/latest-docs/docs-for-ai/filament-3.x-packages-3.x.zip).\n" > README.md
-          fi
-      
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: 'Update documentation'
-          default_author: github_actions
