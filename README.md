@@ -21,3 +21,10 @@ A tool for a multitude of automations.
 
 
 
+
+## Latest Documentation
+
+Latest documentation is available [here](https://github.com/ijpatricio/oven/releases/download/latest-docs/filament-3.x-all.md).
+
+Individual package documentation is available as a [ZIP file](https://github.com/ijpatricio/oven/releases/download/latest-docs/filament-3.x-packages-3.x.zip).
+
