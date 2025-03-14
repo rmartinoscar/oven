@@ -84,3 +84,23 @@ function package_zip_file() {
     # Create zip file
     zip -r "$output_dir/$1.zip" "app-$1"
 }
+
+function prepare_sandbox {
+    package_name=$1
+    sandbox_dir=filament-issue-sandbox
+
+    # Create output directory if it doesn't exist
+    rm -rf temp
+    rm -rf "$sandbox_dir"
+    mkdir -p "$sandbox_dir"
+
+    unzip "filament-issue/$1.zip" -d temp
+    mv "temp/app-$1/"* "$sandbox_dir/"
+    mv "temp/app-$1/".* filament-issue-sandbox/ 2>/dev/null || true
+}
+
+function test() {
+    prepare_sandbox filament-issue-3.x
+    cd filament-issue-sandbox ; php artisan serve
+
+}
