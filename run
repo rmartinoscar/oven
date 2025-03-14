@@ -149,5 +149,30 @@ function zip:package-docs {
   fi
 }
 
+function create-reproduction-repo {
+  repro_dir="filament-issue"
+  rm -rf $repro_dir
+  composer create-project laravel/laravel $repro_dir
+  cd $repro_dir
+
+  # Update .env to use SQLite
+  sed -i '' "s/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/" .env
+  
+  # Create SQLite database file
+  touch database/database.sqlite
+  
+  # Run migrations with seeding
+  php artisan migrate:fresh --seed
+  
+  # Install FilamentPHP
+  composer require filament/filament:"^3.0-stable" -W
+  php artisan filament:install --panels --no-interaction
+}
+
+function test {
+  create-reproduction-repo
+  cd filament-issue ; php artisan serve
+}
+
 TIMEFORMAT="Task completed in %3lR"
 time "${@:-default}"
