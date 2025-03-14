@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-function create-reproduction-repo {
-  repro_dir="filament-issue"
+function create-app-filament-issue-3.x {
+  repro_dir="app-filament-issue-3.x"
+
+  # Prepare dir and cd into it
   rm -rf $repro_dir
   composer create-project laravel/laravel $repro_dir
   cd $repro_dir
@@ -24,6 +26,10 @@ function create-reproduction-repo {
   
   # Run migrations with seeding
   php artisan migrate:fresh --seed
+
+  # Back to root and package
+  cd -
+  package_zip_file filament-issue-3.x
 }
 
 function install_auto_login {
@@ -47,6 +53,18 @@ function add_root_redirect_to_admin_panel {
   sed -i '' "s|return view('welcome');|return redirect('/admin');|" routes/web.php
 }
 
+function package_zip_file() {
+    package_name=$1
+    output_dir="filament-issue"
+
+    # Create output directory if it doesn't exist
+    rm -rf "$output_dir"
+    mkdir -p "$output_dir"
+
+    # Create zip file
+    zip -r "$output_dir/$1.zip" "app-$1"
+}
+
 function test {
-  create-reproduction-repo ; php artisan serve
+  create-app-filament-issue-3.x ; cd app-filament-issue-3.x ; php artisan serve
 }
