@@ -38,15 +38,15 @@ jobs:
         id: current-time
         run: echo "time=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
 
-      - name: Package Filament Issue 3.x
+      - name: Package Filament Issue 4.x
         run: |
           chmod +x ./run
-          ./run create-app-filament-issue-3.x
+          ./run create-app-filament-issue-4.x
 
       - name: Test the artifact(s)
         shell: bash
         run: |
-          ./run prepare_sandbox filament-issue-3.x
+          ./run prepare_sandbox filament-issue-4.x
           cd e2e
           npm run test
 
@@ -60,8 +60,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: filament-issue-3.x
-          path: filament-issue/filament-issue-3.x.zip
+          name: filament-issue-4.x
+          path: filament-issue/filament-issue-4.x.zip
           retention-days: 90
 
       - name: Retry Upload if Failed
@@ -70,8 +70,8 @@ jobs:
           sleep 10
           actions/upload-artifact@v4
           with:
-            name: filament-issue-3.x
-            path: filament-issue/filament-issue-3.x.zip
+            name: filament-issue-4.x
+            path: filament-issue/filament-issue-4.x.zip
             retention-days: 90
           
       # Create a release with the latest documentation
@@ -80,11 +80,11 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: filament-issue
-          name: App for Issue reproduction on Filament v3.x
+          name: App for Issue reproduction on Filament v4.x
           body: |
             Last generated on ${{ steps.current-time.outputs.time }}
           files: |
-            filament-issue/filament-issue-3.x.zip
+            filament-issue/filament-issue-4.x.zip
           draft: false
           prerelease: false
         env:

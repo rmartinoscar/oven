@@ -122,10 +122,10 @@ function zip:package-docs {
     fi
 }
 
-function llm:3.x() {
-    rm -rf filament-src-3.x
-    docs:get 3.x
-    concatenate:packages 3.x
-    concatenate:all 3.x
-    zip:package-docs 3.x
+function llm:4.x() {
+    rm -rf filament-src-4.x
+    docs:get 4.x
+    concatenate:packages 4.x
+    concatenate:all 4.x
+    zip:package-docs 4.x
 }
