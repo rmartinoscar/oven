@@ -29,13 +29,13 @@ jobs:
       - name: Update documentation
         run: |
           chmod +x ./run
-          ./run llm:3.x
+          ./run llm:4.x
       
       - name: Upload all documentation artifact
         uses: actions/upload-artifact@v4
         with:
-          name: filament-docs-3.x
-          path: docs-for-ai/filament-3.x-all.md
+          name: filament-docs-4.x
+          path: docs-for-ai/filament-4.x-all.md
           retention-days: 90
 
       - name: Retry Upload if Failed
@@ -44,15 +44,15 @@ jobs:
           sleep 10
           actions/upload-artifact@v4
           with:
-            name: filament-packages-3.x
-            path: docs-for-ai/filament-3.x-packages-3.x.zip
+            name: filament-packages-4.x
+            path: docs-for-ai/filament-4.x-packages-4.x.zip
             retention-days: 90
           
       - name: Upload packages documentation artifact
         uses: actions/upload-artifact@v4
         with:
-          name: filament-packages-3.x
-          path: docs-for-ai/filament-3.x-packages-3.x.zip
+          name: filament-packages-4.x
+          path: docs-for-ai/filament-4.x-packages-4.x.zip
           retention-days: 90
       
       # Create a release with the latest documentation
@@ -66,8 +66,8 @@ jobs:
             Latest Filament Documentation for LLMs
             Generated on ${{ steps.current-time.outputs.time }}
           files: |
-            docs-for-ai/filament-3.x-all.md
-            docs-for-ai/filament-3.x-packages-3.x.zip
+            docs-for-ai/filament-4.x-all.md
+            docs-for-ai/filament-4.x-packages-4.x.zip
           draft: false
           prerelease: false
         env:

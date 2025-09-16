@@ -1,181 +1,342 @@
-# Documentation for widgets. File: 01-installation.md
+# Documentation for widgets. File: 01-overview.md
 ---
-title: Installation
+title: Overview
 ---
 
-**The Widgets package is pre-installed with the [Panel Builder](/docs/panels).** This guide is for using the Widgets package in a custom TALL Stack application (Tailwind, Alpine, Livewire, Laravel).
+## Introduction
 
-## Requirements
+Filament allows you to build dynamic dashboards, comprised of "widgets". Each widget is an element on the dashboard that displays data in a specific way. For example, you can display [stats](stats-overview), [chart](charts), or a [table](#table-widgets).
 
-Filament requires the following to run:
+## Creating a widget
 
-- PHP 8.1+
-- Laravel v10.0+
-- Livewire v3.0+
-- Tailwind v3.0+ [(Using Tailwind v4?)](#installing-tailwind-css)
-
-## Installation
-
-Require the Widgets package using Composer:
+To create a widget, you can use the `make:filament-widget` command:
 
 ```bash
-composer require filament/widgets:"^3.3" -W
+php artisan make:filament-widget MyWidget
 ```
 
-## New Laravel projects
+This command will ask you which type of widget you want to create. You can choose from the following options:
 
-To quickly get started with Filament in a new Laravel project, run the following commands to install [Livewire](https://livewire.laravel.com), [Alpine.js](https://alpinejs.dev), and [Tailwind CSS](https://tailwindcss.com):
+- **Custom**: A custom widget that you can build from scratch.
+- **Chart**: A widget that displays a [chart](charts).
+- **Stats overview**: A widget that displays [statistics](stats-overview).
+- **Table**: A widget that displays a [table](#table-widgets).
 
-> Since these commands will overwrite existing files in your application, only run this in a new Laravel project!
+## Sorting widgets
 
-```bash
-php artisan filament:install --scaffold --widgets
+Each widget class contains a `$sort` property that may be used to change its order on the page, relative to other widgets:
 
-npm install
-
-npm run dev
+```php
+protected static ?int $sort = 2;
 ```
 
-## Existing Laravel projects
+## Customizing the dashboard page
 
-Run the following command to install the Widgets package assets:
+If you want to customize the dashboard class, for example, to [change the number of widget columns](#customizing-the-widgets-grid), create a new file at `app/Filament/Pages/Dashboard.php`:
 
-```bash
-php artisan filament:install --widgets
-```
+```php
+<?php
 
-### Installing Tailwind CSS
+namespace App\Filament\Pages;
 
-> Filament uses Tailwind CSS v3 for styling. If your project uses Tailwind CSS v4, you will unfortunately need to downgrade it to v3 to use Filament. Filament v3 can't support Tailwind CSS v4 since it introduces breaking changes. Filament v4 will support Tailwind CSS v4.
+use Filament\Pages\Dashboard as BaseDashboard;
 
-Run the following command to install Tailwind CSS with the Tailwind Forms and Typography plugins:
-
-```bash
-npm install tailwindcss@3 @tailwindcss/forms @tailwindcss/typography postcss postcss-nesting autoprefixer --save-dev
-```
-
-Create a new `tailwind.config.js` file and add the Filament `preset` *(includes the Filament color scheme and the required Tailwind plugins)*:
-
-```js
-import preset from './vendor/filament/support/tailwind.config.preset'
-
-export default {
-    presets: [preset],
-    content: [
-        './app/Filament/**/*.php',
-        './resources/views/filament/**/*.blade.php',
-        './vendor/filament/**/*.blade.php',
-    ],
-}
-```
-
-### Configuring styles
-
-Add Tailwind's CSS layers to your `resources/css/app.css`:
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@tailwind variants;
-```
-
-Create a `postcss.config.js` file in the root of your project and register Tailwind CSS, PostCSS Nesting and Autoprefixer as plugins:
-
-```js
-export default {
-    plugins: {
-        'tailwindcss/nesting': 'postcss-nesting',
-        tailwindcss: {},
-        autoprefixer: {},
-    },
-}
-```
-
-### Automatically refreshing the browser
-You may also want to update your `vite.config.js` file to refresh the page automatically when Livewire components are updated:
-
-```js
-import { defineConfig } from 'vite'
-import laravel, { refreshPaths } from 'laravel-vite-plugin'
-
-export default defineConfig({
-    plugins: [
-        laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
-            refresh: [
-                ...refreshPaths,
-                'app/Livewire/**',
-            ],
-        }),
-    ],
-})
-```
-
-### Compiling assets
-
-Compile your new CSS and Javascript assets using `npm run dev`.
-
-### Configuring your layout
-
-Create a new `resources/views/components/layouts/app.blade.php` layout file for Livewire components:
-
-```blade
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-
-        <meta name="application-name" content="{{ config('app.name') }}">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>{{ config('app.name') }}</title>
-
-        <style>
-            [x-cloak] {
-                display: none !important;
-            }
-        </style>
-
-        @filamentStyles
-        @vite('resources/css/app.css')
-    </head>
-
-    <body class="antialiased">
-        {{ $slot }}
-
-        @filamentScripts
-        @vite('resources/js/app.js')
-    </body>
-</html>
-```
-
-## Publishing configuration
-
-You can publish the package configuration using the following command (optional):
-
-```bash
-php artisan vendor:publish --tag=filament-config
-```
-
-## Upgrading
-
-Filament automatically upgrades to the latest non-breaking version when you run `composer update`. After any updates, all Laravel caches need to be cleared, and frontend assets need to be republished. You can do this all at once using the `filament:upgrade` command, which should have been added to your `composer.json` file when you ran `filament:install` the first time:
-
-```json
-"post-autoload-dump": [
+class Dashboard extends BaseDashboard
+{
     // ...
-    "@php artisan filament:upgrade"
-],
+}
 ```
 
-Please note that `filament:upgrade` does not actually handle the update process, as Composer does that already. If you're upgrading manually without a `post-autoload-dump` hook, you can run the command yourself:
+Finally, remove the original `Dashboard` class from [configuration file](../panel-configuration):
+
+```php
+use Filament\Panel;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+        ->pages([]);
+}
+```
+
+If you don't discover pages with `discoverPages()` in the directory you created the new dashboard class, you should manually register the class in the `pages()` method:
+
+```php
+use App\Filament\Pages\Dashboard;
+use Filament\Panel;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->pages([
+            Dashboard::class,
+        ]);
+}
+```
+
+### Creating multiple dashboards
+
+If you want to create multiple dashboards, you can do so by repeating [the process described above](#customizing-the-dashboard-page). Creating new pages that extend the `Dashboard` class will allow you to create as many dashboards as you need.
+
+You will also need to define the URL path to the extra dashboard, otherwise it will be at `/`:
+
+```php
+protected static string $routePath = 'finance';
+```
+
+You may also customize the title of the dashboard by overriding the `$title` property:
+
+```php
+protected static ?string $title = 'Finance dashboard';
+```
+
+The primary dashboard shown to a user is the first one they have access to (controlled by [`canAccess()` method](../navigation/custom-pages#authorization)), according to the defined navigation sort order.
+
+The default sort order for dashboards is `-2`. You can control the sort order of custom dashboards with `$navigationSort`:
+
+```php
+protected static ?int $navigationSort = 15;
+```
+
+### Customizing the widgets' grid
+
+You may change how many grid columns are used to display widgets.
+
+Firstly, you must [replace the original Dashboard page](#customizing-the-dashboard-page).
+
+Now, in your new `app/Filament/Pages/Dashboard.php` file, you may override the `getColumns()` method to return a number of grid columns to use:
+
+```php
+public function getColumns(): int | array
+{
+    return 2;
+}
+```
+
+#### Responsive widgets grid
+
+You may wish to change the number of widget grid columns based on the responsive [breakpoint](https://tailwindcss.com/docs/responsive-design#overview) of the browser. You can do this using an array that contains the number of columns that should be used at each breakpoint:
+
+```php
+public function getColumns(): int | array
+{
+    return [
+        'md' => 4,
+        'xl' => 5,
+    ];
+}
+```
+
+This pairs well with [responsive widget widths](#responsive-widget-widths).
+
+#### Customizing widget width
+
+You may customize the width of a widget using the `$columnSpan` property. You may use a number between 1 and 12 to indicate how many columns the widget should span, or `full` to make it occupy the full width of the page:
+
+```php
+protected int | string | array $columnSpan = 'full';
+```
+
+##### Responsive widget widths
+
+You may wish to change the widget width based on the responsive [breakpoint](https://tailwindcss.com/docs/responsive-design#overview) of the browser. You can do this using an array that contains the number of columns that the widget should occupy at each breakpoint:
+
+```php
+protected int | string | array $columnSpan = [
+    'md' => 2,
+    'xl' => 3,
+];
+```
+
+This is especially useful when using a [responsive widgets grid](#responsive-widgets-grid).
+
+## Conditionally hiding widgets
+
+You may override the static `canView()` method on widgets to conditionally hide them:
+
+```php
+public static function canView(): bool
+{
+    return auth()->user()->isAdmin();
+}
+```
+
+## Table widgets
+
+You may easily add tables to your dashboard. Start by creating a widget with the command:
 
 ```bash
-composer update
+php artisan make:filament-widget LatestOrders --table
+```
 
-php artisan filament:upgrade
+You may now [customize the table](../tables) by editing the widget file.
+
+## Custom widgets
+
+To get started building a `BlogPostsOverview` widget:
+
+```bash
+php artisan make:filament-widget BlogPostsOverview
+```
+
+This command will create two files - a widget class in the `/Widgets` directory of the Filament directory, and a view in the `/widgets` directory of the Filament views directory.
+
+The class is a [Livewire component](https://livewire.laravel.com/docs/components), so any Livewire features are available to you. The Blade view can contain any HTML you like, and you can access any public Livewire properties in the view. You can also access the Livewire component instance in the view using `$this`.
+
+## Filtering widget data
+
+You may add a form to the dashboard that allows the user to filter the data displayed across all widgets. When the filters are updated, the widgets will be reloaded with the new data.
+
+Firstly, you must [replace the original Dashboard page](#customizing-the-dashboard-page).
+
+Now, in your new `app/Filament/Pages/Dashboard.php` file, you may add the `HasFiltersForm` trait, and add the `filtersForm()` method to return form components:
+
+```php
+use Filament\Forms\Components\DatePicker;
+use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+
+class Dashboard extends BaseDashboard
+{
+    use HasFiltersForm;
+
+    public function filtersForm(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Section::make()
+                    ->schema([
+                        DatePicker::make('startDate'),
+                        DatePicker::make('endDate'),
+                        // ...
+                    ])
+                    ->columns(3),
+            ]);
+    }
+}
+```
+
+In widget classes that require data from the filters, you need to add the `InteractsWithPageFilters` trait, which will allow you to use the `$this->pageFilters` property to access the raw data from the filters form:
+
+```php
+use App\Models\BlogPost;
+use Carbon\CarbonImmutable;
+use Filament\Widgets\StatsOverviewWidget;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
+use Illuminate\Database\Eloquent\Builder;
+
+class BlogPostsOverview extends StatsOverviewWidget
+{
+    use InteractsWithPageFilters;
+
+    public function getStats(): array
+    {
+        $startDate = $this->pageFilters['startDate'] ?? null;
+        $endDate = $this->pageFilters['endDate'] ?? null;
+
+        return [
+            StatsOverviewWidget\Stat::make(
+                label: 'Total posts',
+                value: BlogPost::query()
+                    ->when($startDate, fn (Builder $query) => $query->whereDate('created_at', '>=', $startDate))
+                    ->when($endDate, fn (Builder $query) => $query->whereDate('created_at', '<=', $endDate))
+                    ->count(),
+            ),
+            // ...
+        ];
+    }
+}
+```
+
+The `$this->pageFilters` array will always reflect the current form data. Please note that this data is not validated, as it is available live and not intended to be used for anything other than querying the database. You must ensure that the data is valid before using it. In this example, we check if the start date is set before using it in the query.
+
+### Filtering widget data using an action modal
+
+Alternatively, you can swap out the filters form for an action modal, that can be opened by clicking a button in the header of the page. There are many benefits to using this approach:
+
+- The filters form is not always visible, which allows you to use the full height of the page for widgets.
+- The filters do not update the widgets until the user clicks the "Apply" button, which means that the widgets are not reloaded until the user is ready. This can improve performance if the widgets are expensive to load.
+- Validation can be performed on the filters form, which means that the widgets can rely on the fact that the data is valid - the user cannot submit the form until it is. Canceling the modal will discard the user's changes.
+
+To use an action modal instead of a filters form, you can use the `HasFiltersAction` trait instead of `HasFiltersForm`. Then, register the `FilterAction` class as an action in `getHeaderActions()`:
+
+```php
+use Filament\Forms\Components\DatePicker;
+use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Pages\Dashboard\Actions\FilterAction;
+use Filament\Pages\Dashboard\Concerns\HasFiltersAction;
+
+class Dashboard extends BaseDashboard
+{
+    use HasFiltersAction;
+    
+    protected function getHeaderActions(): array
+    {
+        return [
+            FilterAction::make()
+                ->schema([
+                    DatePicker::make('startDate'),
+                    DatePicker::make('endDate'),
+                    // ...
+                ]),
+        ];
+    }
+}
+```
+
+Handling data from the filter action is the same as handling data from the filters header form, except that the data is validated before being passed to the widget. The `InteractsWithPageFilters` trait still applies.
+
+### Persisting widget filters in the user's session
+
+By default, the dashboard filters applied will persist in the user's session between page loads. To disable this, override the `$persistsFiltersInSession` property in the dashboard page class:
+
+```php
+use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+
+class Dashboard extends BaseDashboard
+{
+    use HasFiltersForm;
+
+    protected bool $persistsFiltersInSession = false;
+}
+```
+
+Alternatively, override the `persistsFiltersInSession()` method in the dashboard page class:
+
+```php
+use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
+
+class Dashboard extends BaseDashboard
+{
+    use HasFiltersForm;
+
+    public function persistsFiltersInSession(): bool
+    {
+        return false;
+    }
+}
+```
+
+## Disabling the default widgets
+
+By default, two widgets are displayed on the dashboard. These widgets can be disabled by updating the `widgets()` array of the [configuration](../panel-configuration):
+
+```php
+use Filament\Panel;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->widgets([]);
+}
 ```
 
 # Documentation for widgets. File: 02-stats-overview.md
@@ -183,7 +344,7 @@ php artisan filament:upgrade
 title: Stats overview widgets
 ---
 
-## Overview
+## Introduction
 
 Filament comes with a "stats overview" widget template, which you can use to display a number of different stats in a single widget, without needing to write a custom view.
 
@@ -254,7 +415,7 @@ Stat::make('Unique views', '192.1k')
 
 ## Changing the color of the stat
 
-You may also give stats a `color()` (`danger`, `gray`, `info`, `primary`, `success` or `warning`):
+You may also give stats a [color](../styling/colors):
 
 ```php
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -328,13 +489,13 @@ By default, stats overview widgets refresh their data every 5 seconds.
 To customize this, you may override the `$pollingInterval` property on the class to a new interval:
 
 ```php
-protected static ?string $pollingInterval = '10s';
+protected ?string $pollingInterval = '10s';
 ```
 
 Alternatively, you may disable polling altogether:
 
 ```php
-protected static ?string $pollingInterval = null;
+protected ?string $pollingInterval = null;
 ```
 
 ## Disabling lazy loading
@@ -375,8 +536,9 @@ protected function getDescription(): ?string
 ---
 title: Chart widgets
 ---
+import Aside from "@components/Aside.astro"
 
-## Overview
+## Introduction
 
 Filament comes with many "chart" widget templates, which you can use to display real-time, interactive charts.
 
@@ -388,7 +550,7 @@ php artisan make:filament-widget BlogPostsChart --chart
 
 There is a single `ChartWidget` class that is used for all charts. The type of chart is set by the `getType()` method. In this example, that method returns the string `'line'`.
 
-The `protected static ?string $heading` variable is used to set the heading that describes the chart. If you need to set the heading dynamically, you can override the `getHeading()` method.
+The `protected ?string $heading` variable is used to set the heading that describes the chart. If you need to set the heading dynamically, you can override the `getHeading()` method.
 
 The `getData()` method is used to return an array of datasets and labels. Each dataset is a labeled array of points to plot on the chart, and each label is a string. This structure is identical to the [Chart.js](https://www.chartjs.org/docs) library, which Filament uses to render charts. You may use the [Chart.js documentation](https://www.chartjs.org/docs) to fully understand the possibilities to return from `getData()`, based on the chart type.
 
@@ -401,7 +563,7 @@ use Filament\Widgets\ChartWidget;
 
 class BlogPostsChart extends ChartWidget
 {
-    protected static ?string $heading = 'Blog Posts';
+    protected ?string $heading = 'Blog Posts';
 
     protected function getData(): array
     {
@@ -440,10 +602,10 @@ Below is a list of available chart widget classes which you may extend, and thei
 
 ## Customizing the chart color
 
-You can customize the color of the chart data by setting the `$color` property to either `danger`, `gray`, `info`, `primary`, `success` or `warning`:
+You can customize the [color](../styling/colors) of the chart data by setting the `$color` property:
 
 ```php
-protected static string $color = 'info';
+protected string $color = 'info';
 ```
 
 If you're looking to customize the color further, or use multiple colors across multiple datasets, you can still make use of Chart.js's [color options](https://www.chartjs.org/docs/latest/general/colors.html) in the data:
@@ -499,7 +661,9 @@ protected function getData(): array
 
 ## Filtering chart data
 
-You can set up chart filters to change the data shown on chart. Commonly, this is used to change the time period that chart data is rendered for.
+### Basic Select filter
+
+You can set up chart filters to change the data that is presented. Commonly, this is used to change the time period that chart data is rendered for.
 
 To set a default filter value, set the `$filter` property:
 
@@ -532,6 +696,55 @@ protected function getData(): array
 }
 ```
 
+### Custom filters
+
+You can use [schema components](../schemas) to build custom filters for your chart widget. This approach offers a more flexible way to define filters.
+
+To get started, use the `HasFiltersSchema` trait and implement the `filtersSchema()` method:
+
+```php
+use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Schema;
+use Filament\Widgets\ChartWidget\Concerns\HasFiltersSchema;
+
+class BlogPostsChart extends ChartWidget
+{
+    use HasFiltersSchema;
+    
+    // ...
+    
+    public function filtersSchema(Schema $schema): Schema
+    {
+        return $schema->components([
+            DatePicker::make('startDate')
+                ->default(now()->subDays(30)),
+            DatePicker::make('endDate')
+                ->default(now()),
+        ]);
+    }
+}
+```
+
+The filter values are accessible via the `$this->filters` array. You can use these values inside your `getData()` method:
+
+```php
+protected function getData(): array
+{
+    $startDate = $this->filters['startDate'] ?? null;
+    $endDate = $this->filters['endDate'] ?? null;
+
+    return [
+        // ...
+    ];
+}
+```
+
+The `$this->filters` array will always reflect the current form data. Please note that this data is not validated, as it is available live and not intended to be used for anything other than querying the database. You must ensure that the data is valid before using it.
+
+<Aside variant="info">
+    If you want to add filters that apply to multiple widgets at once, see [filtering widget data](overview#filtering-widget-data) in the dashboard.
+</Aside>
+
 ## Live updating chart data (polling)
 
 By default, chart widgets refresh their data every 5 seconds.
@@ -539,13 +752,13 @@ By default, chart widgets refresh their data every 5 seconds.
 To customize this, you may override the `$pollingInterval` property on the class to a new interval:
 
 ```php
-protected static ?string $pollingInterval = '10s';
+protected ?string $pollingInterval = '10s';
 ```
 
 Alternatively, you may disable polling altogether:
 
 ```php
-protected static ?string $pollingInterval = null;
+protected ?string $pollingInterval = null;
 ```
 
 ## Setting a maximum chart height
@@ -553,7 +766,7 @@ protected static ?string $pollingInterval = null;
 You may place a maximum height on the chart to ensure that it doesn't get too big, using the `$maxHeight` property:
 
 ```php
-protected static ?string $maxHeight = '300px';
+protected ?string $maxHeight = '300px';
 ```
 
 ## Setting chart configuration options
@@ -561,7 +774,7 @@ protected static ?string $maxHeight = '300px';
 You may specify an `$options` variable on the chart class to control the many configuration options that the Chart.js library provides. For instance, you could turn off the [legend](https://www.chartjs.org/docs/latest/configuration/legend.html) for a line chart:
 
 ```php
-protected static ?array $options = [
+protected ?array $options = [
     'plugins' => [
         'legend' => [
             'display' => false,
@@ -625,6 +838,14 @@ To disable this behavior, you may override the `$isLazy` property on the widget 
 
 ```php
 protected static bool $isLazy = true;
+```
+
+## Making the chart collapsible
+
+You may allow the chart to be collapsible by setting the `$isCollapsible` property on the widget class to be `true`:
+
+```php
+protected bool $isCollapsible = true;
 ```
 
 ## Using custom Chart.js plugins
@@ -692,29 +913,5 @@ FilamentAsset::register([
 ]);
 ```
 
-You can find out more about [asset registration](../support/assets), and even [register assets for a specific panel](../panels/configuration#registering-assets-for-a-panel).
-
-# Documentation for widgets. File: 04-tables.md
----
-title: Table widgets
----
-
-When using the [Panel Builder](../panels), you can use table widgets. These use the [table builder](../tables). You can find out how to create them [here](../panels/dashboard#table-widgets).
-
-If you're not using the Panel Builder, there's no need to use a "widget" to render a table. You can simply [add a table to a Livewire component](../tables/adding-a-table-to-a-livewire-component), which does not provide any specific benefits over a widget.
-
-# Documentation for widgets. File: 05-adding-a-widget-to-a-blade-view.md
----
-title: Adding a widget to a Blade view
----
-
-## Overview
-
-Since widgets are Livewire components, you can easily render a widget in any Blade view using the `@livewire` directive:
-
-```blade
-<div>
-    @livewire(\App\Livewire\Dashboard\PostsChart::class)
-</div>
-```
+You can find out more about [asset registration](../advanced/assets), and even [register assets for a specific panel](../panel-configuration#registering-assets-for-a-panel).
 

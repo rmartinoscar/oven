@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-function create-app-filament-issue-3.x {
-  repro_dir="app-filament-issue-3.x"
+function create-app-filament-issue-4.x {
+  repro_dir="app-filament-issue-4.x"
 
   # Prepare dir and cd into it
   rm -rf $repro_dir
@@ -17,7 +17,7 @@ function create-app-filament-issue-3.x {
   touch database/database.sqlite
 
   # Install FilamentPHP
-  composer require filament/filament:"^3.0-stable" -W
+  composer require filament/filament:"^4.0-stable" -W
   php artisan filament:install --panels --no-interaction
   
   # Install auto-login functionality
@@ -31,7 +31,7 @@ function create-app-filament-issue-3.x {
 
   # Back to root and package
   cd -
-  package_zip_file filament-issue-3.x
+  package_zip_file filament-issue-4.x
 }
 
 function install_auto_login {
@@ -100,6 +100,6 @@ function prepare_sandbox {
 }
 
 function test() {
-    prepare_sandbox filament-issue-3.x
+    prepare_sandbox filament-issue-4.x
     cd filament-issue-sandbox ; php artisan serve
 }
