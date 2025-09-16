@@ -38,7 +38,7 @@ jobs:
         id: current-time
         run: echo "time=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
 
-      - name: Package Filament Issue 3.x
+      - name: Package Filament Issue 4.x
         run: |
           chmod +x ./run
           ./run create-app-filament-issue-3.x
